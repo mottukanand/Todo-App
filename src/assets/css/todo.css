@@ -1,0 +1,24 @@
+.todo-application {
+}
+
+.center {
+    text-align: center;
+}
+
+.bullet {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: #A9A9A9;
+}
+
+.pointer {cursor: pointer;}
+
+.white-color{
+    color : "#fff";
+}
+
+.text-color {
+    color : #626262
+}
