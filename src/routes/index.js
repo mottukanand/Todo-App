@@ -1,6 +1,5 @@
 import React, { Component,Suspense  } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-const Dashboard = React.lazy(() => import('../pages/dashboard'));
 const TodoList = React.lazy(() => import('../pages/Todo'));
 
 

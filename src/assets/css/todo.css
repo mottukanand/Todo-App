@@ -1,8 +1,11 @@
-
 .center {
     text-align: center;
 }
 
+.todo-modal {
+    background-color: #00cfe8;
+    text-align: center;
+}
 .bullet {
     width: 12px;
     height: 12px;
@@ -27,4 +30,12 @@
 
 .active {
     color: #7367f0;
+}
+
+.fl-r {
+    float: right;
+}
+
+.fw-4 {
+    font-weight : 400;
 }

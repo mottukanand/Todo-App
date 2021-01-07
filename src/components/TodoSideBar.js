@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getTodos, getBuckets, addNewBucket, addNewTask } from "../redux/actions/todo/index"
-import {
-    Button, Container, Row, Col, Card, CardHeader, CardFooter, CardBody,
-    CardTitle, CardText, ListGroup, ListGroupItem, Badge, ButtonToggle, Table
-    , Input, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, List
+import {Card,  CardBody,ListGroup, ListGroupItem, ButtonToggle, 
 } from 'reactstrap';
 import TodoModal from './TodoModal';
-import { Info, Edit, Trash, Tag, Layers, Star, Check } from "react-feather";
+import BucketEditModal from './BucketEditModal'
+import { Edit, Trash, Layers, Check } from "react-feather";
 
 const TodoSideBar = ({ buckets, getBuckets, getTodos ,handleFilterValue}) => {
 
@@ -16,10 +14,16 @@ const TodoSideBar = ({ buckets, getBuckets, getTodos ,handleFilterValue}) => {
     }, [])
 
     const [modal, setModal] = useState(false);
+    const [toggleBucket, setToggleBucket] = useState(false);
     const [selectedFilter, setSelectedFilter] = useState("all")
+    const [selectBucket, setSelectBucket] = useState("")
 
     const toggleModal = () => {
         setModal(!modal)
+    }
+
+    const toggleBucketModal = () => {
+        setToggleBucket(!toggleBucket);
     }
 
     const handleAllData = () => {
@@ -31,6 +35,13 @@ const TodoSideBar = ({ buckets, getBuckets, getTodos ,handleFilterValue}) => {
         setSelectedFilter(filterType)
         let dat = { "filter": filterType };
         getTodos(dat)
+    }
+
+    const handleBucketEdit = (e,label) => {
+        e.stopPropagation();
+        toggleBucketModal();
+        setSelectBucket(label)
+
     }
     return (
         <>
@@ -110,6 +121,7 @@ const TodoSideBar = ({ buckets, getBuckets, getTodos ,handleFilterValue}) => {
                                     >
                                         <span className="bullet bullet-primary align-middle" />
                                         <span className="align-middle ml-3">{val.label}</span>
+                                        <Edit size={15} className="fl-r" onClick={(e) => handleBucketEdit(e, val)}/>
                                     </ListGroupItem>)
                                 :
                                 null
@@ -134,6 +146,10 @@ const TodoSideBar = ({ buckets, getBuckets, getTodos ,handleFilterValue}) => {
             {
                 modal &&
                 <TodoModal modal={modal} toggleTodoModal={toggleModal} taskObj={false} handleAllData={handleAllData}/>
+            }
+            {
+                toggleBucket &&
+                <BucketEditModal toggleBucket={toggleBucket}  toggleBucketModal = {toggleBucketModal} selectBucket ={selectBucket} buckets= {buckets} />
             }
         </>
     )

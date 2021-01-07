@@ -3,6 +3,8 @@ import { Row, Col, Card, CardBody, } from 'reactstrap';
 import TodoSideBar from '../../components/TodoSideBar';
 import TodoContent from '../../components/TodoContent'
 import '../../assets/css/todo.css';
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 class Todo extends Component {
 state = {
@@ -36,6 +38,7 @@ handleFilterValue = (val) => {
                     </Col>
                     <Col lg={1}></Col>
                 </Row>
+                <ToastContainer />
             </>
         )
     }

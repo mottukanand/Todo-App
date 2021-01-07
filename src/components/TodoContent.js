@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { getTodos, getBuckets, addNewBucket, addNewTask, trashTask, completeTask } from "../redux/actions/todo/index"
 import {
-    Button, Container, Row, Col, Card, CardHeader, CardFooter, CardBody,
-    CardTitle, CardText, ListGroup, ListGroupItem, Badge, ButtonToggle, Table
-    , Input, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, List
+    Card, CardHeader, CardBody, Badge, Table, Input, UncontrolledDropdown,
+    DropdownToggle, DropdownMenu, DropdownItem
 } from 'reactstrap';
 import TodoModal from './TodoModal';
-import { Info, Edit, Trash, Tag, Layers, Star, Check } from "react-feather";
+import { Info, Edit, Trash } from "react-feather";
+import { toast, Zoom } from "react-toastify";
 
 const TodoContent = ({ todos, getTodos, trashTask, completeTask, filterValue }) => {
 
@@ -23,17 +23,27 @@ const TodoContent = ({ todos, getTodos, trashTask, completeTask, filterValue }) 
     }, []);
 
     const handleDelete = (id) => {
-        trashTask(id, filterValue)
+        trashTask(id, filterValue);
+        toast.success("Task Deleted Successfully.", { transition: Zoom });
+
     }
 
     const handleEdit = (data) => {
         setTaskObj(data)
         toggleModal()
     }
+    const handleCompleted = (val) => {
+        completeTask(val.id, filterValue);
+        if(!val.isCompleted){
+            toast.info("Task Completed.", { transition: Zoom });
+        }else{
+            toast.info("Task Uncompleted.", { transition: Zoom });
+        }
+    }
     return (
         <>
             <Card>
-                <CardHeader className="center">
+                <CardHeader className="todo-modal">
                     <h5>TODO - {filterValue.toUpperCase()}</h5>
                 </CardHeader>
                 <CardBody>
@@ -48,11 +58,11 @@ const TodoContent = ({ todos, getTodos, trashTask, completeTask, filterValue }) 
                                                     type="checkbox"
                                                     checked={val.isCompleted}
                                                     onClick={e => {
-                                                        completeTask(val.id, filterValue)
+                                                        handleCompleted(val)
                                                     }} />
                                             </td>
-                                            <td>{val.title}</td>
-                                            <td>{val.desc}</td>
+                                            <td><h5>{val.title} {val.tags && <span><Badge className="badge-glow" color="info">{val.tags.toUpperCase()}</Badge></span>}</h5>
+                                                <p>{val.desc}</p></td>
                                             <td>
                                                 <UncontrolledDropdown className="d-inline-block">
                                                     <DropdownToggle tag="span">
@@ -77,7 +87,7 @@ const TodoContent = ({ todos, getTodos, trashTask, completeTask, filterValue }) 
                                         </tr>)
                                     :
                                     <tr>
-                                        <td colSpan="4" style={{ color: "red" }}>No Tasks Found</td>
+                                        <td colSpan="3" style={{ color: "red" }}>No Tasks Found</td>
                                     </tr>
                             }
                         </tbody>
@@ -87,7 +97,7 @@ const TodoContent = ({ todos, getTodos, trashTask, completeTask, filterValue }) 
 
             {
                 modal &&
-                <TodoModal modal={modal} toggleTodoModal={toggleModal} taskObj={taskObj} filterValue ={filterValue} />
+                <TodoModal modal={modal} toggleTodoModal={toggleModal} taskObj={taskObj} filterValue={filterValue} />
             }
         </>
     )

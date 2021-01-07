@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Col, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Col, Form, FormGroup, Label, Input } from 'reactstrap';
 import CreatableSelect from 'react-select/creatable';
 import { connect } from 'react-redux';
-import { getTodos, getBuckets, addNewBucket, addNewTask,updateTask } from "../redux/actions/todo/index"
+import { getTodos, getBuckets, addNewBucket, addNewTask, updateTask } from "../redux/actions/todo/index";
+import { toast, Zoom } from "react-toastify";
 
 const TodoModal = ({ modal, toggleTodoModal, getBuckets, buckets, addNewBucket, addNewTask, updateTask, taskObj, filterValue, handleAllData }) => {
 
 
-    console.log(taskObj, "taskObjtaskObj")
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
 
@@ -26,14 +26,14 @@ const TodoModal = ({ modal, toggleTodoModal, getBuckets, buckets, addNewBucket, 
     }, [])
 
     const handleOnChange = (selectedOption) => {
-        console.log("selectedOption", selectedOption)
         if (selectedOption) {
             let dat = {};
             dat.value = selectedOption.value;
             dat.label = selectedOption.label;
 
             if (selectedOption.__isNew__) {
-                addNewBucket(dat)
+                addNewBucket(dat);
+                toast.info("Bucket Created Successfully.", { transition: Zoom });
             }
 
             setBucketData(dat)
@@ -48,16 +48,17 @@ const TodoModal = ({ modal, toggleTodoModal, getBuckets, buckets, addNewBucket, 
             sendData.title = title;
             sendData.desc = description;
             bucketData.value ? (sendData.tags = bucketData.value) : (sendData.tags = "")
-            console.log(sendData, "Sewndata")
             addNewTask(sendData)
             toggleTodoModal();
-            handleAllData()
+            handleAllData();
+            toast.success("Task Added Successfully.", { transition: Zoom });
 
+        } else {
+            toast.error("Please Fill Required Fields.", { transition: Zoom });
         }
     }
 
     const editTask = () => {
-        console.log(taskObj,"MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
         if (title && description) {
             let sendData = {};
             sendData.id = taskObj.id;
@@ -66,11 +67,13 @@ const TodoModal = ({ modal, toggleTodoModal, getBuckets, buckets, addNewBucket, 
             sendData.title = title;
             sendData.desc = description;
             bucketData && bucketData.value ? (sendData.tags = bucketData.value) : (sendData.tags = "")
-            console.log(sendData, "Sewndata")
             updateTask(sendData, filterValue)
             toggleTodoModal();
+            toast.success("Task Updated Successfully.", { transition: Zoom });
 
-        } 
+        } else {
+            toast.error("Please Fill Required Fields.", { transition: Zoom });
+        }
     }
 
     return (
@@ -81,19 +84,19 @@ const TodoModal = ({ modal, toggleTodoModal, getBuckets, buckets, addNewBucket, 
                 className="modal-dialog-centered"
                 size="lg"
             >
-                <ModalHeader toggle={toggleTodoModal} className="bg-primary" style={{color :"#fff"}}>
+                <ModalHeader toggle={toggleTodoModal} className="bg-primary" style={{ color: "#fff" }}>
                     {taskObj ? "Update Task" : "Add Task"}
                 </ModalHeader>
                 <ModalBody className="modal-dialog-centered">
                     <Form style={{ width: "100%" }}>
                         <FormGroup row>
-                            <Label for="exampleEmail" sm={2}>Title</Label>
+                            <Label for="exampleEmail" sm={2}>Title <span style={{ color: "red" }}>*</span></Label>
                             <Col sm={10}>
                                 <Input type="text" name="title" id="exampleEmail" placeholder="Title" value={title ? title : ""} onChange={(e) => setTitle(e.target.value)} />
                             </Col>
                         </FormGroup>
                         <FormGroup row>
-                            <Label for="exampleText" sm={2}>Description</Label>
+                            <Label for="exampleText" sm={2}>Description <span style={{ color: "red" }}>*</span></Label>
                             <Col sm={10}>
                                 <Input type="textarea" name="text" id="exampleText" placeholder="Description" value={description ? description : ""} onChange={(e) => setDescription(e.target.value)} />
                             </Col>
@@ -114,8 +117,8 @@ const TodoModal = ({ modal, toggleTodoModal, getBuckets, buckets, addNewBucket, 
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                <Button color="danger" onClick={toggleTodoModal}>
-                                Cancel
+                    <Button color="danger" onClick={toggleTodoModal}>
+                        Cancel
           </Button>
                     {
                         taskObj
@@ -143,5 +146,5 @@ const mapStateToProps = state => {
 };
 export default connect(
     mapStateToProps,
-    { getTodos, getBuckets, addNewBucket, addNewTask,updateTask }
+    { getTodos, getBuckets, addNewBucket, addNewTask, updateTask }
 )(TodoModal);

@@ -2,7 +2,7 @@ import { combineReducers } from "redux";
 import todoReducer from "./todo/"
 
 const appReducer = combineReducers({
-    todoApp: todoReducer,
+  todoApp: todoReducer,
 })
 
 const rootReducer = (state, action) => {
