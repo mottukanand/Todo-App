@@ -43,6 +43,7 @@ export const addNewBucket = bucket => {
             .catch(err => console.log(err))
     }
 }
+
 // export const completeTask = todo => {
 //   return dispatch => {
 //     dispatch({ type: "COMPLETE_TASK", id: todo.id, value: todo.isCompleted })
@@ -66,14 +67,23 @@ export const addNewBucket = bucket => {
 //   }
 // }
 
-export const trashTask = id => {
+export const trashTask = (id, filterValue) => {
   return (dispatch) => {
     axios
       .post("/api/app/todo/trash-todo", id)
       .then(response => dispatch({ type: "TRASH_TASK", id }))
-      .then(dispatch(getTodos({filter : "all"})))
+      .then(dispatch(getTodos({filter : filterValue})))
   }
 }
+
+export const completeTask = (id, filterValue) => {
+    return (dispatch) => {
+      axios
+        .put("/api/apps/todo/update-complete", id)
+        .then(response => dispatch({ type: "COMPLETE_TASK", id }))
+        .then(dispatch(getTodos({filter : filterValue})))
+    }
+  }
 
 // export const updateTodo = todo => {
 //   const request = axios.post("/api/apps/todo/update-todo", todo)
@@ -111,11 +121,11 @@ export const addNewTask = task => {
     }
 }
 
-export const updateTask = task => {
+export const updateTask = (task,filterValue) => {
     return (dispatch) => {
         axios.put("/api/apps/todo/update-task", { task }).then(response => {
             dispatch({ type: "UPDATE_TASK", task })
-            dispatch(getTodos({filter : "all"}))
+            dispatch(getTodos({filter : filterValue}))
         })
     }
 }

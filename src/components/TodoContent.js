@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { getTodos, getBuckets, addNewBucket, addNewTask,trashTask } from "../redux/actions/todo/index"
+import { getTodos, getBuckets, addNewBucket, addNewTask, trashTask, completeTask } from "../redux/actions/todo/index"
 import {
     Button, Container, Row, Col, Card, CardHeader, CardFooter, CardBody,
     CardTitle, CardText, ListGroup, ListGroupItem, Badge, ButtonToggle, Table
@@ -9,7 +9,7 @@ import {
 import TodoModal from './TodoModal';
 import { Info, Edit, Trash, Tag, Layers, Star, Check } from "react-feather";
 
-const TodoContent = ({ todos, getTodos,trashTask }) => {
+const TodoContent = ({ todos, getTodos, trashTask, completeTask, filterValue }) => {
 
     const [modal, setModal] = useState(false);
     const [taskObj, setTaskObj] = useState({})
@@ -23,7 +23,7 @@ const TodoContent = ({ todos, getTodos,trashTask }) => {
     }, []);
 
     const handleDelete = (id) => {
-        trashTask(id)
+        trashTask(id, filterValue)
     }
 
     const handleEdit = (data) => {
@@ -33,15 +33,23 @@ const TodoContent = ({ todos, getTodos,trashTask }) => {
     return (
         <>
             <Card>
+                <CardHeader className="center">
+                    <h5>TODO - {filterValue.toUpperCase()}</h5>
+                </CardHeader>
                 <CardBody>
-                    <Table hover responsive style={{minHeight : "125px"}}>
+                    <Table hover responsive style={{ minHeight: "125px" }}>
                         <tbody>
                             {
                                 todos && todos.length ?
                                     todos.map((val, index) =>
-                                        <tr key={index} className ="text-color">
+                                        <tr key={index} className="text-color">
                                             <td>
-                                                <Input type="checkbox" />
+                                                <Input
+                                                    type="checkbox"
+                                                    checked={val.isCompleted}
+                                                    onClick={e => {
+                                                        completeTask(val.id, filterValue)
+                                                    }} />
                                             </td>
                                             <td>{val.title}</td>
                                             <td>{val.desc}</td>
@@ -55,20 +63,22 @@ const TodoContent = ({ todos, getTodos,trashTask }) => {
                                                             <Edit size={17} />
                                                             <span className="align-middle ml-1">Edit</span>
                                                         </DropdownItem>
-                                                        <DropdownItem tag="li" className="pointer" onClick={(e) => handleDelete(val.id)}>
-                                                            <span>
-                                                                <Trash size={17} />
-                                                                <span className="align-middle ml-1">Delete</span>
-                                                            </span>
-                                                        </DropdownItem>
+                                                        {filterValue !== "trashed" &&
+                                                            <DropdownItem tag="li" className="pointer" onClick={(e) => handleDelete(val.id)}>
+                                                                <span>
+                                                                    <Trash size={17} />
+                                                                    <span className="align-middle ml-1">Delete</span>
+                                                                </span>
+                                                            </DropdownItem>
+                                                        }
                                                     </DropdownMenu>
                                                 </UncontrolledDropdown>
                                             </td>
                                         </tr>)
                                     :
                                     <tr>
-                                    <td colspan="4" style={{color : "red"}}>No Tasks Found</td>
-                                  </tr>
+                                        <td colSpan="4" style={{ color: "red" }}>No Tasks Found</td>
+                                    </tr>
                             }
                         </tbody>
                     </Table>
@@ -77,7 +87,7 @@ const TodoContent = ({ todos, getTodos,trashTask }) => {
 
             {
                 modal &&
-                <TodoModal modal={modal} toggleTodoModal={toggleModal}  taskObj = {taskObj}/>
+                <TodoModal modal={modal} toggleTodoModal={toggleModal} taskObj={taskObj} filterValue ={filterValue} />
             }
         </>
     )
@@ -89,5 +99,5 @@ const mapStateToProps = state => {
 };
 export default connect(
     mapStateToProps,
-    { getTodos, getBuckets, addNewBucket, addNewTask ,trashTask}
+    { getTodos, getBuckets, addNewBucket, addNewTask, trashTask, completeTask }
 )(TodoContent);

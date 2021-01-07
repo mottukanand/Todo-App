@@ -8,7 +8,8 @@ let data = {
             desc:
                 "Pie liquorice wafer cotton candy danish. Icing topping jelly-o halvah pastry lollipop.",
             tags: "doc",
-            isTrashed : false
+            isTrashed : false,
+            isCompleted : false
         },
         {
             id :2,
@@ -16,7 +17,8 @@ let data = {
             desc:
                 "Donut tart toffee cake cookie gingerbread. Sesame snaps brownie sugar plum candy canes muffin cotton candy.",
             tags: "frontend",
-            isTrashed : false
+            isTrashed : false,
+            isCompleted : false
         },
         {
             id :3,
@@ -24,14 +26,16 @@ let data = {
             desc:
                 "Dragée gummi bears tiramisu brownie cookie. Jelly beans pudding marzipan fruitcake muffin. Wafer gummi bears lollipop pudding lollipop biscuit.",
             tags: "backend",
-            isTrashed : false
+            isTrashed : false,
+            isCompleted : false
         },
         {
             id :4,
             title: "Skype Tommy",
             desc: "Tart oat cake sesame snaps lollipop croissant cake biscuit.",
             tags: "bug",
-            isTrashed : false
+            isTrashed : false,
+            isCompleted : false
         },
         {
             id :5,
@@ -39,7 +43,8 @@ let data = {
             desc:
                 "Sweet roll toffee dragée cotton candy jelly beans halvah gingerbread jelly-o. Ice cream bear claw sugar plum powder.",
             tags: "",
-            isTrashed : false
+            isTrashed : false,
+            isCompleted : false
         },
         {
             id :6,
@@ -47,7 +52,8 @@ let data = {
             desc:
                 "Toffee sugar plum oat cake tiramisu tart bonbon gingerbread cheesecake cake. ",
             tags: "backend",
-            isTrashed : false
+            isTrashed : false,
+            isCompleted : false
         },
         {
             id :7,
@@ -55,7 +61,8 @@ let data = {
             desc:
                 "Gummi bears bear claw cake tiramisu gummies tiramisu apple pie chocolate jujubes. ",
             tags: "",
-            isTrashed : false
+            isTrashed : false,
+            isCompleted : false
         },
         {
             id :8,
@@ -63,15 +70,17 @@ let data = {
             desc:
                 "Cookie fruitcake macaroon muffin apple pie chocolate bar toffee oat cake. Icing chocolate danish.",
             tags: "",
-            isTrashed : false
+            isTrashed : false,
+            isCompleted : false
         },
         {
             id :9,
             title: "Remove redundant files",
             desc:
                 "Brownie jelly beans tootsie roll brownie marshmallow. Sesame snaps halvah marzipan chocolate cake. Icing bear claw pie apple pie.",
-            tags: "",
-            isTrashed : false
+            tags: "frontend",
+            isTrashed : false,
+            isCompleted : false
         },
         {
             id :10,
@@ -79,7 +88,8 @@ let data = {
             desc:
                 "Jelly topping toffee bear claw. Sesame snaps lollipop macaroon croissant cheesecake pastry cupcake.",
             tags: "frontend",
-            isTrashed : false
+            isTrashed : false,
+            isCompleted : false
         }
     ],
     taskTags: [
@@ -99,6 +109,10 @@ mock.onGet("api/apps/todo").reply(request => {
             // If filter == all
             if (filter === "all") {
                 return !task.isTrashed
+            }else if(filter === "completed"){
+                return !task.isTrashed && task.isCompleted
+            }else if(filter === "trashed"){
+                return task.isTrashed
             }else{
                 return !task.isTrashed && (task.tags === filter)
             }
@@ -171,4 +185,20 @@ console.log(data.tasks,"aaaaaaaaaaaaaaaaa")
     // data.taskTags.push(bucket)
 
     return [201, { created: true }]
+})
+
+
+
+mock.onPut("/api/apps/todo/update-complete").reply(request => {
+    const todoId = request.data
+    console.log(todoId,"todoId")
+    data.tasks = data.tasks.map(_todo => {
+        if (_todo.id === todoId) {
+            _todo.isCompleted = !_todo.isCompleted
+        }
+        return _todo
+    })
+
+    console.log( data.tasks,"FFFFFFFFFFFFFFFFFFFFFF")
+    return [201, todoId]
 })

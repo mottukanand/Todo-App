@@ -5,9 +5,16 @@ import TodoContent from '../../components/TodoContent'
 import '../../assets/css/todo.css';
 
 class Todo extends Component {
+state = {
+    filterValue : "all"
+}
 
+handleFilterValue = (val) => {
+    this.setState({ filterValue : val});
+}
 
     render() {
+        const {filterValue} = this.state;
         return (
             <>
                 <Row>
@@ -17,10 +24,10 @@ class Todo extends Component {
                             <CardBody>
                                 <Row>
                                     <Col lg={3}>
-                                        <TodoSideBar />
+                                        <TodoSideBar handleFilterValue ={this.handleFilterValue}/>
                                     </Col>
                                     <Col lg={9}>
-                                        <TodoContent />
+                                        <TodoContent filterValue ={filterValue} />
                                     </Col>
                                 </Row>
 

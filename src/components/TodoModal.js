@@ -4,7 +4,7 @@ import CreatableSelect from 'react-select/creatable';
 import { connect } from 'react-redux';
 import { getTodos, getBuckets, addNewBucket, addNewTask,updateTask } from "../redux/actions/todo/index"
 
-const TodoModal = ({ modal, toggleTodoModal, getBuckets, buckets, addNewBucket, addNewTask, updateTask, taskObj }) => {
+const TodoModal = ({ modal, toggleTodoModal, getBuckets, buckets, addNewBucket, addNewTask, updateTask, taskObj, filterValue, handleAllData }) => {
 
 
     console.log(taskObj, "taskObjtaskObj")
@@ -51,19 +51,23 @@ const TodoModal = ({ modal, toggleTodoModal, getBuckets, buckets, addNewBucket, 
             console.log(sendData, "Sewndata")
             addNewTask(sendData)
             toggleTodoModal();
+            handleAllData()
 
         }
     }
 
     const editTask = () => {
+        console.log(taskObj,"MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM")
         if (title && description) {
             let sendData = {};
             sendData.id = taskObj.id;
+            sendData.isCompleted = taskObj.isCompleted;
+            sendData.isTrashed = taskObj.isTrashed;
             sendData.title = title;
             sendData.desc = description;
             bucketData && bucketData.value ? (sendData.tags = bucketData.value) : (sendData.tags = "")
             console.log(sendData, "Sewndata")
-            updateTask(sendData)
+            updateTask(sendData, filterValue)
             toggleTodoModal();
 
         } 

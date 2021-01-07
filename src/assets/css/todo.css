@@ -1,5 +1,3 @@
-.todo-application {
-}
 
 .center {
     text-align: center;
@@ -21,4 +19,12 @@
 
 .text-color {
     color : #626262
+}
+
+.pl-0{
+    padding-left : 0px;
+}
+
+.active {
+    color: #7367f0;
 }
